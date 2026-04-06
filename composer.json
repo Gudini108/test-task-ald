@@ -1,0 +1,24 @@
+{
+    "name": "aledo/mid-legacy-test-task",
+    "description": "Legacy-style PHP coding task for a mid-level developer.",
+    "type": "project",
+    "require": {
+        "php": "^8.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aledo\\PhpMiddleTestTask\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aledo\\PhpMiddleTestTask\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
