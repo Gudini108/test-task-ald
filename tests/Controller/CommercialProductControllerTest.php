@@ -63,9 +63,10 @@ final class CommercialProductControllerTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testUpdateDelegatesToServiceAndReturnsResponse(): void
+    public function testUpdateDelegatesToServiceForWrappedPayload(): void
     {
         $payload = ['name' => 'Updated product'];
+
         $result = CommercialProductUpdateResult::updated([
             'id' => 10,
             'name' => 'Updated product',
@@ -100,9 +101,86 @@ final class CommercialProductControllerTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testPatchDelegatesToServiceAndReturnsResponse(): void
+    public function testUpdateDelegatesToServiceForFlatPayload(): void
+    {
+        $payload = ['name' => 'Updated product'];
+
+        $result = CommercialProductUpdateResult::updated([
+            'id' => 10,
+            'name' => 'Updated product',
+        ]);
+
+        $payloadExtractor = $this->createMock(CommercialProductPayloadExtractor::class);
+        $updateService = $this->createMock(CommercialProductUpdateService::class);
+
+        $payloadExtractor->expects(self::once())
+            ->method('extractForUpdate')
+            ->with($payload)
+            ->willReturn($payload);
+
+        $updateService->expects(self::once())
+            ->method('update')
+            ->with(10, $payload)
+            ->willReturn($result);
+
+        $controller = new CommercialProductController($payloadExtractor, $updateService);
+
+        $response = $controller->update(10, $payload);
+
+        self::assertEquals(
+            new JsonResponse(200, [
+                'id' => 10,
+                'name' => 'Updated product',
+            ]),
+            $response,
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testPatchDelegatesToServiceForWrappedPayload(): void
     {
         $payload = ['name' => 'Patched product'];
+
+        $result = CommercialProductUpdateResult::updated([
+            'id' => 10,
+            'name' => 'Patched product',
+        ]);
+
+        $payloadExtractor = $this->createMock(CommercialProductPayloadExtractor::class);
+        $updateService = $this->createMock(CommercialProductUpdateService::class);
+
+        $payloadExtractor->expects(self::once())
+            ->method('extractForPatch')
+            ->with(['entity' => $payload])
+            ->willReturn($payload);
+
+        $updateService->expects(self::once())
+            ->method('update')
+            ->with(10, $payload)
+            ->willReturn($result);
+
+        $controller = new CommercialProductController($payloadExtractor, $updateService);
+
+        $response = $controller->patch(10, ['entity' => $payload]);
+
+        self::assertEquals(
+            new JsonResponse(200, [
+                'id' => 10,
+                'name' => 'Patched product',
+            ]),
+            $response,
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testPatchDelegatesToServiceForFlatPayload(): void
+    {
+        $payload = ['name' => 'Patched product'];
+
         $result = CommercialProductUpdateResult::updated([
             'id' => 10,
             'name' => 'Patched product',

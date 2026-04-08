@@ -6,18 +6,19 @@ namespace Aledo\PhpMiddleTestTask\Service;
 
 class CommercialProductPayloadExtractor
 {
-    private const string ENTITY = 'entity';
-
     public function extractForUpdate(array $data): ?array
     {
-        $entity = $data[self::ENTITY] ?? null;
-
-        return is_array($entity) ? $entity : null;
+        return $this->extractEntity($data);
     }
 
     public function extractForPatch(array $data): ?array
     {
-        $entity = $data[self::ENTITY] ?? $data;
+        return $this->extractEntity($data);
+    }
+
+    private function extractEntity(array $data): ?array
+    {
+        $entity = $data['entity'] ?? $data;
 
         if (!is_array($entity) || $entity === []) {
             return null;

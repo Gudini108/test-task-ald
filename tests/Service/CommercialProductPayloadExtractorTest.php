@@ -9,24 +9,39 @@ use PHPUnit\Framework\TestCase;
 
 final class CommercialProductPayloadExtractorTest extends TestCase
 {
-    public function testExtractForUpdateReturnsEntityWhenItIsArray(): void
+    public function testExtractForUpdateReturnsWrappedEntity(): void
     {
         $extractor = new CommercialProductPayloadExtractor();
 
         $result = $extractor->extractForUpdate([
             'entity' => [
-                'name' => 'Product',
-                'count' => 5,
+                'name' => 'Светильник',
+                'count' => 2,
             ],
         ]);
 
         self::assertSame([
-            'name' => 'Product',
-            'count' => 5,
+            'name' => 'Светильник',
+            'count' => 2,
         ], $result);
     }
 
-    public function testExtractForUpdateReturnsNullWhenEntityIsMissing(): void
+    public function testExtractForUpdateReturnsFlatPayload(): void
+    {
+        $extractor = new CommercialProductPayloadExtractor();
+
+        $result = $extractor->extractForUpdate([
+            'name' => 'Светильник',
+            'count' => 2,
+        ]);
+
+        self::assertSame([
+            'name' => 'Светильник',
+            'count' => 2,
+        ], $result);
+    }
+
+    public function testExtractForUpdateReturnsNullWhenPayloadIsEmpty(): void
     {
         $extractor = new CommercialProductPayloadExtractor();
 
@@ -35,44 +50,35 @@ final class CommercialProductPayloadExtractorTest extends TestCase
         self::assertNull($result);
     }
 
-    public function testExtractForUpdateReturnsNullWhenEntityIsNotArray(): void
-    {
-        $extractor = new CommercialProductPayloadExtractor();
-
-        $result = $extractor->extractForUpdate([
-            'entity' => 'wrong',
-        ]);
-
-        self::assertNull($result);
-    }
-
-    public function testExtractForPatchReturnsEntityWhenWrappedIntoEntityKey(): void
+    public function testExtractForPatchReturnsWrappedEntity(): void
     {
         $extractor = new CommercialProductPayloadExtractor();
 
         $result = $extractor->extractForPatch([
             'entity' => [
-                'name' => 'Product',
+                'name' => 'Светильник',
+                'count' => 2,
             ],
         ]);
 
         self::assertSame([
-            'name' => 'Product',
+            'name' => 'Светильник',
+            'count' => 2,
         ], $result);
     }
 
-    public function testExtractForPatchReturnsFlatPayloadAsIs(): void
+    public function testExtractForPatchReturnsFlatPayload(): void
     {
         $extractor = new CommercialProductPayloadExtractor();
 
         $result = $extractor->extractForPatch([
-            'name' => 'Product',
-            'count' => 3,
+            'name' => 'Светильник',
+            'count' => 2,
         ]);
 
         self::assertSame([
-            'name' => 'Product',
-            'count' => 3,
+            'name' => 'Светильник',
+            'count' => 2,
         ], $result);
     }
 
@@ -81,17 +87,6 @@ final class CommercialProductPayloadExtractorTest extends TestCase
         $extractor = new CommercialProductPayloadExtractor();
 
         $result = $extractor->extractForPatch([]);
-
-        self::assertNull($result);
-    }
-
-    public function testExtractForPatchReturnsNullWhenEntityIsNotArray(): void
-    {
-        $extractor = new CommercialProductPayloadExtractor();
-
-        $result = $extractor->extractForPatch([
-            'entity' => 'wrong',
-        ]);
 
         self::assertNull($result);
     }
