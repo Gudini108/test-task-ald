@@ -29,33 +29,29 @@ final class CommercialProduct
     ) {
     }
 
-    /**
-     * ! TODO: validate logic, rename method & test implementation, then refactor project.
-     */
     public function __cloneNotImplemented(): void
     {
-        if (!$this->id) {
-            return;
+        if ($this->image !== null) {
+            $this->image = clone $this->image;
         }
-        $this->name = clone $this->name;
-        $this->comment = clone $this->comment;
-        $this->comment = clone $this->comment;
-        $this->count = clone $this->count;
-        $this->type = clone $this->type;
-        $this->price = clone $this->price;
-        $this->image_uuid = clone $this->image_uuid;
-        $this->image = clone $this->image;
     }
 
     public function setImageUuid(?string $imageUuid): self
     {
         $this->image_uuid = $imageUuid;
+
         return $this;
+    }
+
+    public function getImageUuid(): ?string
+    {
+        return $this->image_uuid;
     }
 
     public function setImage(?UuidFile $image): self
     {
         $this->image = $image;
+
         return $this;
     }
 
